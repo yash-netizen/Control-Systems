@@ -1,0 +1,18 @@
+# Model
+model = tf.keras.Model(inputs=[inputs], outputs=[outputs])
+
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.01,weight_decay=0.001)
+loss = tf.keras.losses.CategoricalCrossentropy(
+    from_logits=False,
+    name='categorical_crossentropy'
+)
+# Compilation
+model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
+
+# Summary
+model.summary()
+
+tf.config.run_functions_eagerly(True)
+model1=keras.models.load_model("D:/project/model.keras",safe_mode=False)
+
+output = model1.predict(val)
