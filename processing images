@@ -1,0 +1,45 @@
+segmentation_keys = {
+        "102,102,156":0,
+        "107,142,35":1,
+        "0,102,0":2,
+        "112,103,87":3,
+        "128,64,128":4,
+        "48,41,30":5,
+        "102,51,0":6,
+        "130,76,0":7,
+        "70,70,70":8,
+        "28,42,168":9,
+        "254,228,12":10,
+        "255,22,96":11,
+        "119,11,32":12,
+        "112,150,146":13,
+        "51,51,0":14,
+        "190,250,190":15,
+        "2,135,115":16,
+        "0,0,0":17,
+        "190,153,153":18,
+        "9,143,150":19,
+        "0,50,89":20,
+        "254,148,12":21,
+        "153,153,153":22
+    }
+
+from PIL import Image
+def unique_colors(image_path):
+    # Load the image
+    img = Image.open(image_path).convert('RGB')
+    
+    # Resize the image to reduce the amount of data
+    img.thumbnail((256,256), Image.NEAREST)
+    
+    # Use a set to find unique colors
+    unique_colors = set(img.getdata())
+    
+    return unique_colors
+
+# Specify the path to your segmentation mask image
+unique = set()
+for image_path in tqdm(mask_path):
+    for u in unique_colors(image_path):
+        unique.add(u)
+print(unique)
