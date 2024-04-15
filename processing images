@@ -43,3 +43,32 @@ for image_path in tqdm(mask_path):
     for u in unique_colors(image_path):
         unique.add(u)
 print(unique)
+
+images = []
+# iterate over 1000 image paths
+for path in tqdm(image_path):
+    # read file
+    file = tf.io.read_file(path)
+    # decode png file into a tensor
+    image = tf.image.decode_png(file, channels=3, dtype=tf.uint8)
+    image = tf.cast(image, tf.float32)
+    image = image/255.0
+    # resize image
+    image = tf.image.resize(image, (128,128))
+    # append to the list
+    images.append(image)
+
+# create a list to store masks
+masks = []
+# iterate over 1000 mask paths
+for path in tqdm(mask_path):
+    # read the file
+    file = tf.io.read_file(path)
+    # decode png file into a tensor
+    mask = tf.image.decode_png(file, channels=1, dtype=tf.uint8)
+    mask = tf.cast(mask, tf.float32)
+    mask = mask/255.0
+    # resize image
+    mask = tf.image.resize(mask, (128,128))
+    # append mask to the list
+    masks.append(mask)
