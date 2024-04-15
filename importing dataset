@@ -1,0 +1,24 @@
+import tensorflow as tf
+from tensorflow_examples.models.pix2pix import pix2pix
+# for path related functionalities
+import os
+# for array operations
+import numpy as np
+# tensorflow framework
+import tensorflow as tf
+# keras API for deep learning
+from tensorflow import keras
+# for image visulaizations
+import matplotlib.pyplot as plt
+# for legends and other supporting functionalities
+# for viewing iteration status
+from tqdm import tqdm
+image_path = []
+for root, dirs, files in os.walk('D:\project\dataset\dataset\semantic_drone_dataset\original_images'):
+    # iterate over 1000 images
+    for file in files:
+        # create path
+        path = os.path.join(root,file)
+        # add path to list
+        image_path.append(path)
+len(image_path)
