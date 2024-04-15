@@ -1,0 +1,18 @@
+from sklearn.model_selection import train_test_split
+# split data into 80/20 ratio
+train_X, val_X,train_y, val_y = train_test_split(images, masks, test_size=0.2, 
+                                                      random_state=0
+                                                     )
+
+# develop tf Dataset objects
+train_X = tf.data.Dataset.from_tensor_slices(train_X)
+val_X = tf.data.Dataset.from_tensor_slices(val_X)
+
+train_y = tf.data.Dataset.from_tensor_slices(train_y)
+val_y = tf.data.Dataset.from_tensor_slices(val_y)
+
+# verify the shapes and data types
+train_X.element_spec, train_y.element_spec, val_X.element_spec, val_y.element_spec
+
+train = tf.data.Dataset.zip((train_X, train_y))
+val = tf.data.Dataset.zip((val_X, val_y))
