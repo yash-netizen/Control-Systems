@@ -1,0 +1,45 @@
+# Create a function for a convolution block
+def conv_block(inputs, num_filters):
+    x = tf.keras.layers.Conv2D(num_filters, (3, 3), activation="relu", 
+                               kernel_initializer="he_normal", padding="same")(inputs)
+    x = tf.keras.layers.Dropout(0.1)(x)
+    x = tf.keras.layers.Conv2D(num_filters, (3, 3), activation="relu", 
+                               kernel_initializer="he_normal", padding="same")(x)
+    return x
+
+# Create a function for the expanding path
+def upsample_block(inputs, conv_prev, num_filters):
+    up = tf.keras.layers.Conv2DTranspose(num_filters, (2, 2), strides=(2, 2), padding="same")(inputs)
+    concat = tf.keras.layers.concatenate([up, conv_prev])
+    conv = conv_block(concat, num_filters)
+    return conv
+
+# Inputs
+inputs = tf.keras.layers.Input((IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS))
+
+# Normalization
+s = tf.keras.layers.Lambda(lambda x: x/255.0)(inputs) 
+
+# Contraction path
+c1 = conv_block(s, 16)
+p1 = tf.keras.layers.MaxPooling2D((2, 2))(c1)
+
+c2 = conv_block(p1, 32)
+p2 = tf.keras.layers.MaxPooling2D((2, 2))(c2)
+
+c3 = conv_block(p2, 64)
+p3 = tf.keras.layers.MaxPooling2D((2, 2))(c3)
+
+c4 = conv_block(p3, 128)
+p4 = tf.keras.layers.MaxPooling2D((2, 2))(c4)
+
+c5 = conv_block(p4, 256)
+
+# Expansive path
+c6 = upsample_block(c5, c4, 128)
+c7 = upsample_block(c6, c3, 64)
+c8 = upsample_block(c7, c2, 32)
+c9 = upsample_block(c8, c1, 16)
+
+# Output layer
+outputs = tf.keras.layers.Conv2D(1, (1, 1), activation='sigmoid')(c9)
